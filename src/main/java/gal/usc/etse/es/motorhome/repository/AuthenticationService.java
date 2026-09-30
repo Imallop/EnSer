@@ -3,9 +3,7 @@ package gal.usc.etse.es.motorhome.repository;
 import gal.usc.etse.es.motorhome.exception.InvalidRefreshTokenException;
 import gal.usc.etse.es.motorhome.model.dto.User;
 import gal.usc.etse.es.motorhome.model.entity.RefreshToken;
-import gal.usc.etse.es.motorhome.repository.RefreshTokenRepository;
-import gal.usc.etse.es.motorhome.repository.RoleRepository;
-import gal.usc.etse.es.motorhome.repository.UserRepository;
+// roles removed: no RoleRepository dependency
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -34,9 +32,8 @@ import java.util.concurrent.TimeUnit;
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final KeyPair keyPair;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final gal.usc.etse.es.motorhome.repository.UserRepository userRepository;
+    private final gal.usc.etse.es.motorhome.repository.RefreshTokenRepository refreshTokenRepository;
 
     @Value("${auth.jwt.ttl:PT15M}")
     private Duration tokenTTL;
@@ -48,13 +45,11 @@ public class AuthenticationService {
     public AuthenticationService(
             AuthenticationManager authenticationManager,
             KeyPair keyPair,
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            RefreshTokenRepository refreshTokenRepository) {
+            gal.usc.etse.es.motorhome.repository.UserRepository userRepository,
+            gal.usc.etse.es.motorhome.repository.RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.keyPair = keyPair;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -80,7 +75,7 @@ public class AuthenticationService {
                 .signWith(keyPair.getPrivate())
                 .compact();
 
-        return new gal.usc.etse.es.motorhome.model.dto.User(user.getUsername(), token, new HashSet<>(roles),
+        return new gal.usc.etse.es.motorhome.model.dto.User(user.getUsername(), token,
                 user.getName());
     }
 
@@ -128,20 +123,7 @@ public class AuthenticationService {
     }
 
     public RoleHierarchy loadRoleHierarchy() {
-        RoleHierarchyImpl.Builder builder = RoleHierarchyImpl.withRolePrefix("");
-
-        roleRepository.findAll().forEach(role -> {
-            if (!role.getIncludes().isEmpty()) {
-                builder.role("ROLE_" + role.getRolename()).implies(
-                        role.getIncludes().stream().map(i -> "ROLE_" + i.getRolename()).toArray(String[]::new));
-            }
-            if (!role.getPermissions().isEmpty()) {
-                builder.role("ROLE_" + role.getRolename()).implies(
-                        role.getPermissions().stream().map(p -> p.getResource() + ":" + p.getAction())
-                                .toArray(String[]::new));
-            }
-        });
-
-        return builder.build();
+        // Roles removed: return empty hierarchy
+        return RoleHierarchyImpl.withRolePrefix("").build();
     }
 }

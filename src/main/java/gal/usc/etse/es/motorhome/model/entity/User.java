@@ -1,17 +1,12 @@
 package gal.usc.etse.es.motorhome.model.entity;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -30,19 +25,15 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "username"))
-    @Column(name = "role")
-    private List<String> roles = new ArrayList<>();
+    // roles removed: single-user model
 
     public User() {
     }
 
-    public User(String username, String password, String name, List<String> roles) {
+    public User(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.roles = roles;
     }
 
     public void setName(String name) {
@@ -57,10 +48,6 @@ public class User {
         this.password = password;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
-
     public String getName() {
         return name;
     }
@@ -73,7 +60,18 @@ public class User {
         return password;
     }
 
-    public List<String> getRoles() {
-        return roles;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }
