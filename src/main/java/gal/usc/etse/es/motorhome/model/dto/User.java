@@ -1,13 +1,17 @@
 package gal.usc.etse.es.motorhome.model.dto;
 
-public record User (
+import java.util.Set;
+
+public record User(
         String id,
-        String name
-) {
+        String token,
+        Set<String> roles,
+        String name) {
     public static User from(gal.usc.etse.es.motorhome.model.entity.User user) {
         return new User(
                 user.getUsername(),
-                user.getName()
-        );
+                null,
+                java.util.Collections.emptySet(),
+                user.getName());
     }
 }

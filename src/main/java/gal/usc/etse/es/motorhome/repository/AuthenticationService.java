@@ -1,9 +1,9 @@
-package gal.usc.etse.es.motorhome.service;
+package gal.usc.etse.es.motorhome.repository;
 
 import gal.usc.etse.es.motorhome.exception.InvalidRefreshTokenException;
+import gal.usc.etse.es.motorhome.model.dto.User;
 import gal.usc.etse.es.motorhome.model.entity.RefreshToken;
 import gal.usc.etse.es.motorhome.repository.RefreshTokenRepository;
-import gal.usc.etse.es.motorhome.model.dto.User;
 import gal.usc.etse.es.motorhome.repository.RoleRepository;
 import gal.usc.etse.es.motorhome.repository.UserRepository;
 import io.jsonwebtoken.Claims;
