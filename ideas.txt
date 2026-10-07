@@ -1,0 +1,63 @@
+Opciones Proyecto EnSer
+
+Opcion 1:
+
+Red social motos
+
+
+Caracterisiticas:
+- Rutas personalizables con valhalla
+- Fotos / Videos
+- Chat individual / grupal ????
+- Seguidores
+- "Strava"
+- Perfil basado en la moto no el usuario
+- Puntos de interes
+
+
+
+
+
+BBDD
+
+
+Usuario:
+- Nombre de usuario
+- Nombre
+- Contraseña
+- ID
+- Correo
+- Foto perfil
+
+Moto:
+- Modelo (Dividir con marca?)
+- Potencia
+- Cilindrada
+- Foto
+
+Rutas:
+- Inicio
+- Fin
+- Parámetros de configuración
+- Waypoints
+
+Publicacion:
+- Ruta / Waypoint
+- Fotos
+- Descripcion
+- Comentario
+
+Comentario:
+- Comentario
+- Usuario
+- Publicacion Asociada
+
+
+Descripcion
+
+Aplicacion que permite crear y modificar rutas de forma interactiva, compartirlas y opinar de ellas mediante publicaciones y conectar con otros usuarios. Aparte muestra recomendaciones de rutas de la propia aplicacion.
+
+
+
+
+
