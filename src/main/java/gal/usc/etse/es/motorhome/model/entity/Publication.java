@@ -44,5 +44,4 @@ public class Publication {
         comment.setPublication(this);
     }
 
-
 }
