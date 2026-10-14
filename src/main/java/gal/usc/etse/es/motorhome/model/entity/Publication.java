@@ -1,10 +1,5 @@
 package gal.usc.etse.es.motorhome.model.entity;
 
-<<<<<<< HEAD
-import jakarta.persistence.*;
-import lombok.*;
-
-=======
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Column;
@@ -22,7 +17,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.AssertTrue;
 
 import java.time.LocalDateTime;
->>>>>>> 3e65d53 (Feat: Añadir las entities que faltaban)
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,54 +24,20 @@ import java.util.List;
 @Table(name = "publications")
 @Getter
 @Setter
-<<<<<<< HEAD
-@NoArgsConstructor
-
-public class Publication {
-=======
 public class Publication {
 
->>>>>>> 3e65d53 (Feat: Añadir las entities que faltaban)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-<<<<<<< HEAD
-    @Column(length = 2000)
-    private String description;
-
-    // Lado propietario: la FK author_id está en la tabla publications
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
-
-    // Lado propietario: la FK route_id está en la tabla publications.
-    // Sin nullable = false: una publicación puede no llevar ruta.
-=======
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_username", nullable = false)
     private User author;
 
->>>>>>> 3e65d53 (Feat: Añadir las entities que faltaban)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
     private Route route;
 
-<<<<<<< HEAD
-    // Lado inverso: no crea columnas, solo permite navegar a los comentarios
-    @OneToMany(
-            mappedBy = "publication",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Comment> comments = new ArrayList<>();
-
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setPublication(this);
-    }
-
-=======
     @Column(nullable = false)
     private String title;
 
@@ -110,5 +70,4 @@ public class Publication {
     public boolean isPublicationContentPresent() {
         return route != null || photo != null || content != null;
     }
->>>>>>> 3e65d53 (Feat: Añadir las entities que faltaban)
 }
