@@ -1,5 +1,7 @@
 package gal.usc.etse.es.motorhome.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,6 +12,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -25,39 +29,19 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    // roles removed: single-user model
+    @NotBlank
+    @Column(nullable = false)
+    private String email;
+
 
     public User() {
     }
 
-    public User(String username, String password, String name) {
+    public User(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
+        this.email = email;
     }
 
     @Override

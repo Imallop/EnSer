@@ -1,11 +1,17 @@
 package gal.usc.etse.es.motorhome.model.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 @SuppressWarnings("unused")
 @RedisHash()
+@Getter
+@Setter
+@Accessors(chain = true)
 public class RefreshToken {
     @Id
     private String token;
@@ -13,38 +19,12 @@ public class RefreshToken {
     @TimeToLive
     private long ttl;
 
-    public RefreshToken() { }
+    public RefreshToken() {
+    }
 
     public RefreshToken(String token, String user, long ttl) {
         this.token = token;
         this.user = user;
         this.ttl = ttl;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public RefreshToken setToken(String token) {
-        this.token = token;
-        return this;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public RefreshToken setUser(String user) {
-        this.user = user;
-        return this;
-    }
-
-    public long getTtl() {
-        return ttl;
-    }
-
-    public RefreshToken setTtl(long ttl) {
-        this.ttl = ttl;
-        return this;
     }
 }
