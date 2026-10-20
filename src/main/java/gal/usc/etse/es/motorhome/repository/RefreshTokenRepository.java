@@ -13,5 +13,5 @@ import java.util.Optional;
 @Repository
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
     Collection<RefreshToken> deleteAllByUser(String user);
-    Optional<RefreshToken> findByToken(String token);
+    //Optional<RefreshToken> findByToken(String token); Me ponía que mejor usar directamente findById
 }

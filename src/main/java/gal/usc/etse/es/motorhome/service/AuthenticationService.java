@@ -80,7 +80,7 @@ public class AuthenticationService {
     }
 
     public User login(String refreshToken) throws InvalidRefreshTokenException {
-        Optional<RefreshToken> token = refreshTokenRepository.findByToken(refreshToken);
+        Optional<RefreshToken> token = refreshTokenRepository.findById(refreshToken);
 
         if (token.isPresent()) {
             var user = userRepository.findByUsername(token.get().getUser())

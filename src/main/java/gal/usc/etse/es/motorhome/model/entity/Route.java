@@ -45,7 +45,7 @@ public class Route {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Waypoint> waypoints = new ArrayList<>();
+    private List<Waypoint> waypoints = new ArrayList<>();
 
     public Route() {
     }
