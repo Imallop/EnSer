@@ -31,6 +31,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/docs/**").permitAll()
+                        .requestMatchers("/actuator/health",
+                                "/swagger-ui.html", "/swagger-ui/**",
+                                "/v3/api-docs/**", "/scalar/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class)
