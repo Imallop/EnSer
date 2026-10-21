@@ -58,6 +58,12 @@ Descripcion
 Aplicacion que permite crear y modificar rutas de forma interactiva, compartirlas y opinar de ellas mediante publicaciones y conectar con otros usuarios. Aparte muestra recomendaciones de rutas de la propia aplicacion.
 
 
+http://localhost:8080/actuator/health
+http://localhost:8080/swagger-ui.html
 
+TODO:
 
+- Servicios CRUD: (cread, listar, buscar por id, actualizar, boorrar) entidades
+- Controladores REST (.../motorhome/controller) (UserController, Motorbike, Route, Publication, Comment)
+- DTO y validación
 
