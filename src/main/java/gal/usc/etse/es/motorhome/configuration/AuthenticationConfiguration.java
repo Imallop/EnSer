@@ -9,9 +9,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.Resource;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -19,7 +19,7 @@ import java.security.PrivateKey;
 @Configuration
 public class AuthenticationConfiguration {
     @Value("${keystore.location:classpath:keys.p12}")
-    private String ksLocation;
+    private Resource ksLocation;
     @Value("${keystore.password:123456789}")
     private String ksPassword;
     @Value("${keystore.private.password:123456789}")
@@ -42,13 +42,13 @@ public class AuthenticationConfiguration {
 
     @Bean
     public KeyPair jwtSignatureKeys(){
-        try {
+        try (InputStream input = ksLocation.getInputStream()) {
             KeyStore ks = KeyStore.getInstance("PKCS12");
-            ks.load(new FileInputStream(ResourceUtils.getFile(ksLocation)), ksPassword.toCharArray());
+            ks.load(input, ksPassword.toCharArray());
 
             return new KeyPair(ks.getCertificate(keyName).getPublicKey(), (PrivateKey)ks.getKey(keyName, keyPassword.toCharArray()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("No se puede cargar la clave JWT. Consulta la sección de claves del README.", e);
         }
     }
 }

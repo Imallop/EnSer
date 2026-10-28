@@ -3,22 +3,16 @@ package gal.usc.etse.es.motorhome.service;
 import gal.usc.etse.es.motorhome.exception.InvalidRefreshTokenException;
 import gal.usc.etse.es.motorhome.model.entity.RefreshToken;
 import gal.usc.etse.es.motorhome.model.dto.User;
-// roles removed: no RoleRepository dependency
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.resilience.annotation.ConcurrencyLimit;
-import org.springframework.resilience.annotation.Retryable;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +20,6 @@ import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class AuthenticationService {
@@ -53,30 +46,24 @@ public class AuthenticationService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    @Retryable(maxRetries = 3, delay = 300, jitter = 50, timeUnit = TimeUnit.MILLISECONDS, multiplier = 2)
-    @ConcurrencyLimit(10)
-    public gal.usc.etse.es.motorhome.model.dto.User login(gal.usc.etse.es.motorhome.model.entity.User user)
-            throws AuthenticationException {
+    public User login(gal.usc.etse.es.motorhome.model.dto.LoginRequest request) {
         Authentication auth = authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken.unauthenticated(user.getUsername(), user.getPassword()));
+                UsernamePasswordAuthenticationToken.unauthenticated(request.username(), request.password()));
+        var user = userRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(auth.getName()));
+        return issueToken(user);
+    }
 
-        List<String> roles = auth.getAuthorities()
-                .stream()
-                .filter(authority -> authority instanceof SimpleGrantedAuthority)
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-
+    private User issueToken(gal.usc.etse.es.motorhome.model.entity.User user) {
+        Instant now = Instant.now();
         String token = Jwts.builder()
-                .subject(auth.getName())
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plus(tokenTTL)))
-                .notBefore(Date.from(Instant.now()))
-                .claim("roles", roles)
+                .subject(user.getUsername())
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plus(tokenTTL)))
+                .notBefore(Date.from(now))
                 .signWith(keyPair.getPrivate())
                 .compact();
-
-        return new gal.usc.etse.es.motorhome.model.dto.User(user.getUsername(), token,
-                user.getName());
+        return new User(user.getUsername(), token, user.getName());
     }
 
     public User login(String refreshToken) throws InvalidRefreshTokenException {
@@ -86,7 +73,7 @@ public class AuthenticationService {
             var user = userRepository.findByUsername(token.get().getUser())
                     .orElseThrow(() -> new UsernameNotFoundException(token.get().getUser()));
 
-            return login(user);
+            return issueToken(user);
         }
 
         throw new InvalidRefreshTokenException(refreshToken);

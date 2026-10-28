@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -11,11 +9,21 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U motorhome -d motorhome"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   app:
     build: .
@@ -26,9 +34,20 @@ services:
       SPRING_DATASOURCE_USERNAME: motorhome
       SPRING_DATASOURCE_PASSWORD: motorhome
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATA_REDIS_HOST: redis
+      KEYSTORE_LOCATION: file:/app/keys.p12
+    volumes:
+      - type: bind
+        source: ./src/main/resources/keys.p12
+        target: /app/keys.p12
+        read_only: true
+        bind:
+          create_host_path: false
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   db-data:

@@ -29,12 +29,17 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorize -> authorize
+                        .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        // CRUD público mientras se definen los requisitos de autenticación.
+                        .requestMatchers("/motorbikes", "/motorbikes/**").permitAll()
                         .requestMatchers("/docs/**").permitAll()
                         .requestMatchers("/actuator/health",
                                 "/swagger-ui.html", "/swagger-ui/**",
                                 "/v3/api-docs/**", "/scalar/**").permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(errors -> errors.authenticationEntryPoint(
+                        (request, response, exception) -> response.setStatus(401)))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

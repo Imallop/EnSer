@@ -28,6 +28,12 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        return path.equals("/motorbikes") || path.startsWith("/motorbikes/");
+    }
+
+    @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
@@ -39,7 +45,14 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        User user = authenticationService.parseJWT(token.replaceFirst("^Bearer ", ""));
+        User user;
+        try {
+            user = authenticationService.parseJWT(token.substring(7));
+        } catch (JwtException | org.springframework.security.core.userdetails.UsernameNotFoundException | IllegalArgumentException e) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.authenticated(
                 user.id(),

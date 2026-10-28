@@ -1,6 +1,6 @@
-FROM gradle:8.6-jdk17 AS build
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /home/gradle/project
-COPY --chown=gradle:gradle . .
+COPY . .
 RUN ./gradlew bootJar --no-daemon
 
 FROM eclipse-temurin:17-jre-jammy
