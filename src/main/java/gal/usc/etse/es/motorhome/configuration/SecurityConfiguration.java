@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                         // CRUD público mientras se definen los requisitos de autenticación.
                         .requestMatchers("/motorbikes", "/motorbikes/**").permitAll()
                         .requestMatchers("/publications", "/publications/**").permitAll()
+                        .requestMatchers("/routes", "/routes/**").permitAll()
                         .requestMatchers("/docs/**").permitAll()
                         .requestMatchers("/actuator/health",
                                 "/swagger-ui.html", "/swagger-ui/**",
