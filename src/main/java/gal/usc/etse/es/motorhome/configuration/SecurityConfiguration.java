@@ -33,10 +33,12 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         // CRUD público mientras se definen los requisitos de autenticación.
                         .requestMatchers("/motorbikes", "/motorbikes/**").permitAll()
+                        .requestMatchers("/publications", "/publications/**").permitAll()
                         .requestMatchers("/docs/**").permitAll()
                         .requestMatchers("/actuator/health",
                                 "/swagger-ui.html", "/swagger-ui/**",
-                                "/v3/api-docs/**", "/scalar/**").permitAll()
+                                "/v3/api-docs/**", "/scalar/**")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors.authenticationEntryPoint(
                         (request, response, exception) -> response.setStatus(401)))
