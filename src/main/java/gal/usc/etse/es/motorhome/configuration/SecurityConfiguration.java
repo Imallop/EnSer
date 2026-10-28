@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/publications", "/publications/**").permitAll()
                         .requestMatchers("/routes", "/routes/**").permitAll()
                         .requestMatchers("/comments", "/comments/**").permitAll()
+                        .requestMatchers("/waypoints", "/waypoints/**").permitAll()
                         .requestMatchers("/docs/**").permitAll()
                         .requestMatchers("/actuator/health",
                                 "/swagger-ui.html", "/swagger-ui/**",
